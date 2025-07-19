@@ -4,18 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 class CustomUserCreationForm(UserCreationForm):
-    # --- Sobrescrevendo os campos padrão do Django ---
+    # ... (os outros campos continuam os mesmos) ...
     username = forms.CharField(
         label="Nome de Usuário",
-        help_text="Letras, números e @/./+/-/_ apenas."
+        help_text="Obrigatório. 150 caracteres ou menos. Letras, números e @/./+/-/_ apenas."
     )
-    password2 = forms.CharField(
-        label="Confirmação de Senha",
-        widget=forms.PasswordInput,
-        help_text="Informe a mesma senha para verificação."
-    )
-    
-    # --- Customizando nossos campos ---
     email = forms.EmailField(
         label="Endereço de E-mail"
     )
@@ -28,11 +21,18 @@ class CustomUserCreationForm(UserCreationForm):
         label="Saldo Inicial para Simulação (R$)",
         min_value=0.01,
         decimal_places=2,
-        initial=1000.00,
-        help_text="Exemplo: 1000,00"
+        initial=10000.00,
+        help_text="Exemplo: 10000,00"
     )
+
+    # --- NOVO CAMPO ADICIONADO ---
+    terms_agreement = forms.BooleanField(
+        label="Eu li e concordo com os termos de uso.",
+        required=True,
+        initial=False
+    )
+    # -----------------------------
 
     class Meta(UserCreationForm.Meta):
         model = User
-        # A ordem dos campos no formulário
-        fields = ('username', 'email', 'password21', 'password22', 'gemini_api_key', 'initial_balance')
+        fields = UserCreationForm.Meta.fields + ('email',)

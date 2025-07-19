@@ -4,15 +4,68 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8"> <!-- Aumentei a largura para o texto caber melhor -->
         <div class="card">
             <div class="card-body">
                 <h2 class="card-title text-center">Crie sua Conta</h2>
                 <form method="post">
                     {% csrf_token %}
-                    {{ form.as_p }}
+                    
+                    <!-- Renderiza os campos do formulário, exceto o de termos -->
+                    {{ form.username.label_tag }} {{ form.username }}
+                    <small class="form-text text-muted">{{ form.username.help_text|safe }}</small>
+                    {{ form.username.errors }}
+
+                    {{ form.email.label_tag }} {{ form.email }}
+                    {{ form.email.errors }}
+
+                    {{ form.password1.label_tag }} {{ form.password1 }}
+                    <small class="form-text text-muted">{{ form.password1.help_text|safe }}</small>
+                    {{ form.password1.errors }}
+
+                    {{ form.password2.label_tag }} {{ form.password2 }}
+                    <small class="form-text text-muted">{{ form.password2.help_text|safe }}</small>
+                    {{ form.password2.errors }}
+
+                    {{ form.gemini_api_key.label_tag }} {{ form.gemini_api_key }}
+                    <small class="form-text text-muted">{{ form.gemini_api_key.help_text|safe }}</small>
+                    {{ form.gemini_api_key.errors }}
+
+                    {{ form.initial_balance.label_tag }} {{ form.initial_balance }}
+                    <small class="form-text text-muted">{{ form.initial_balance.help_text|safe }}</small>
+                    {{ form.initial_balance.errors }}
+
+                    <hr>
+
+                    <!-- Seção do Termo de Responsabilidade -->
+                    <div class="card my-3">
+                        <div class="card-header">
+                            <strong>Termo de Isenção de Responsabilidade</strong>
+                        </div>
+                        <div class="card-body" style="max-height: 150px; overflow-y: auto;">
+                            <p class="small">
+                                O <strong>Evolutium AI</strong> é uma ferramenta experimental e educacional projetada para simulação de estratégias de investimento com base em análise de dados e inteligência artificial.
+                            </p>
+                            <p class="small">
+                                As informações e recomendações geradas por este aplicativo são puramente para fins de demonstração e <strong>NÃO DEVEM SER CONSIDERADAS COMO ACONSELHAMENTO FINANCEIRO</strong>. O mercado de ações é volátil e envolve riscos significativos.
+                            </p>
+                            <p class="small">
+                                Ao se cadastrar, você reconhece e concorda que todas as decisões de investimento que você tomar no mercado real, inspiradas ou não por esta ferramenta, são de sua única e exclusiva responsabilidade. O desenvolvedor do Evolutium AI não se responsabiliza por quaisquer perdas financeiras ou danos que possam ocorrer.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Campo de Checkbox para o Termo -->
+                    <div class="form-check mb-3">
+                        {{ form.terms_agreement }}
+                        <label class="form-check-label" for="{{ form.terms_agreement.id_for_label }}">
+                            {{ form.terms_agreement.label }}
+                        </label>
+                        {{ form.terms_agreement.errors }}
+                    </div>
+                    
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <button type="submit" class="btn btn-primary">Cadastrar e Concordar</button>
                     </div>
                 </form>
             </div>
