@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from decimal import Decimal, InvalidOperation # <-- Importa a exceção
+from decimal import Decimal, InvalidOperation
 import math
 import yfinance as yf
 from django.http import HttpResponseNotAllowed
@@ -78,7 +78,9 @@ def dashboard_view(request):
             for pos in portfolio.positions.all():
                 market_data = data_provider.get_market_data(pos.ticker)
                 if market_data:
-                    positions_with_data.append({**market_data, 'buy_price': pos.buy_price, 'quantity': pos.quantity})
+                    market_data.update({'buy_price': float(pos.buy_price), 'quantity': pos.quantity})
+                    market_data['current_price'] = market_data['fundamental_data'].get('Preço Atual', 0)
+                    positions_with_data.append(market_data)
 
             tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
             candidates = [data for ticker in config.TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
@@ -91,16 +93,24 @@ def dashboard_view(request):
             
             recommendation = next((action for action in action_plan if action.get('action') in ['BUY', 'SELL']), action_plan[0] if action_plan else None)
             
-            if recommendation and recommendation.get('action') == 'BUY':
-                ticker = recommendation.get('ticker')
-                asset_data = next((c for c in candidates if c['ticker'] == ticker), None)
-                price = asset_data['fundamental_data'].get('Preço Atual', 0) if asset_data else 0
-                if price > 0:
-                    risk_value = portfolio.balance * Decimal(str(config.RISK_PERCENTAGE_PER_TRADE))
-                    quantity = math.floor(risk_value / Decimal(str(price)))
-                    recommendation['suggested_quantity'] = quantity
-                    recommendation['current_price'] = price
-            
+            if recommendation:
+                if recommendation.get('action') == 'BUY':
+                    ticker = recommendation.get('ticker')
+                    asset_data = next((c for c in candidates if c['ticker'] == ticker), None)
+                    price = asset_data['fundamental_data'].get('Preço Atual', 0) if asset_data else 0
+                    if price > 0:
+                        risk_value = portfolio.balance * Decimal(str(config.RISK_PERCENTAGE_PER_TRADE))
+                        quantity = math.floor(risk_value / Decimal(str(price)))
+                        recommendation['suggested_quantity'] = quantity
+                        recommendation['current_price'] = price
+                
+                elif recommendation.get('action') == 'SELL':
+                    ticker = recommendation.get('ticker')
+                    pos_data = next((p for p in positions_with_data if p['ticker'] == ticker), None)
+                    if pos_data:
+                        recommendation['quantity'] = pos_data.get('quantity')
+                        recommendation['current_price'] = pos_data.get('current_price')
+
             context['recommendation'] = recommendation
 
         except Exception as e:
@@ -112,19 +122,15 @@ def dashboard_view(request):
 def execute_trade_view(request):
     if request.method == 'POST':
         portfolio = Portfolio.objects.get(user=request.user)
-        
         action = request.POST.get('action')
         ticker = request.POST.get('ticker')
         quantity = int(request.POST.get('quantity'))
-        
-        # --- A CORREÇÃO ESTÁ AQUI ---
         price_str = request.POST.get('price', '0').replace(',', '.')
         try:
             price = Decimal(price_str)
         except InvalidOperation:
             messages.error(request, "O formato do preço recebido é inválido.")
             return redirect('trading_app:dashboard')
-        # -----------------------------
 
         if action == 'BUY':
             trade_value = price * quantity

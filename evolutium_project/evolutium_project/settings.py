@@ -73,3 +73,16 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# evolutium_project/settings.py
+# ... (todo o resto do arquivo) ...
+
+# --- CONFIGURAÇÃO DO DJANGO-RQ (FILA DE TAREFAS) ---
+# O Render nos dará uma URL para o Redis, que será lida a partir das variáveis de ambiente.
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+
+RQ_QUEUES = {
+    'default': {
+        'URL': REDIS_URL,
+        'DEFAULT_TIMEOUT': 360, # Timeout de 6 minutos por tarefa
+    }
+}
