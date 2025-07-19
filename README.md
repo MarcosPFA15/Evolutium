@@ -55,7 +55,11 @@ O terminal mostrará um link abra este link no seu navegador para acessar o apli
 
 Qualquer bug so me reportar :D
 
+Recomendo voces usarem uma vez por dia
+
 
 !!!!!!!
 ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO E NAO RECARREGA A PAGINA 
 !!!!!!!
+
+Disclaimer: Não me responsabilizo por perdas, use por sua conta e risco.
