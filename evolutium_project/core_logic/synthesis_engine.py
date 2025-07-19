@@ -9,7 +9,6 @@ class SynthesisEngine:
     def  __init__(self, api_key=None):
         self.model = None
         try:
-            # Prioriza a chave passada diretamente. Se não houver, busca no config.
             final_api_key = api_key if api_key else config.GEMINI_API_KEY
 
             if not final_api_key:
@@ -23,7 +22,6 @@ class SynthesisEngine:
                 HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
                 HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
             }
-            # ---------------------------------------------------------
 
             self.model = genai.GenerativeModel('gemini-1.5-flash', safety_settings=safety_settings)
             logging.info("[ENGINE] Motor de Síntese com 'gemini-1.5-flash' inicializado com SUCESSO.")
