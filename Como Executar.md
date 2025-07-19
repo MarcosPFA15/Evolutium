@@ -1,6 +1,10 @@
 # MEUS MANOS!!!!!!!!!!!
 
-Como Executar o Evolutium AI Localmente?
+O Evolutium é uma ia que verifica 600+ de ativos e escolhe a melhor opção, alem de criar uma conta com seu saldo e ativos ja comprados para voce
+não se perder, ela tambem verifica qual dos ativos seria bom para vender, se quiserem dou uma explicação melhor de como ela funciona, pra finalizar
+caso queriam um ativo que nao esta na lista do config.py é so me falar que eu adiciono para todos.
+
+Como Executar o Evolutium Ia Localmente?
 
 Este guia irá ajudá-lo a configurar e executar o aplicativo Evolutium AI no seu próprio computador.
 
