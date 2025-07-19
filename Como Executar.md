@@ -1,3 +1,5 @@
+# MEUS MANOS!!!!!!!!!!!
+
 Como Executar o Evolutium AI Localmente?
 
 Este guia irá ajudá-lo a configurar e executar o aplicativo Evolutium AI no seu próprio computador.
@@ -24,7 +26,8 @@ Crie um Ambiente Virtual:
 
 python -m venv venv
 venv\Scripts\activate  # No Windows
-# source venv/bin/activate  # No macOS/Linux
+
+source venv/bin/activate  # No macOS/Linux
 
 Instale as Dependências:
 O arquivo requirements.txt contém todas as bibliotecas que o projeto precisa. Instale-as com um único comando:
@@ -45,4 +48,4 @@ Agora você está pronto para iniciar o servidor local:
 
 python manage.py runserver
 
-O terminal mostrará um link, geralmente http://127.0.0.1:8000/. Abra este link no seu navegador para acessar o aplicativo.
+O terminal mostrará um link abra este link no seu navegador para acessar o aplicativo.
