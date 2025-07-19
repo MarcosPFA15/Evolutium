@@ -5,7 +5,6 @@ import logging
 import pandas_ta as ta
 
 class DataProvider:
-    # ... (A classe DataProvider para o modo "ao vivo" continua a mesma) ...
     def get_market_data(self, ticker: str) -> dict | None:
         yf_ticker_str = f"{ticker}.SA"
         logging.info(f"[DATA PROV] Buscando dados para {yf_ticker_str}...")
@@ -15,9 +14,9 @@ class DataProvider:
             if not info or 'currentPrice' not in info:
                 logging.warning(f"[DATA PROV] Não foram encontrados dados para {yf_ticker_str}.")
                 return None
+            
             hist_df = yf_ticker.history(period="150d", interval="1d", auto_adjust=False)
             
-            # Adicionado para garantir compatibilidade
             if isinstance(hist_df.columns, pd.MultiIndex):
                 hist_df.columns = hist_df.columns.droplevel(1)
 
@@ -35,14 +34,20 @@ class DataProvider:
                     "BBU_20_2.0": last_row.get('BBU_20_2.0'), "MACD_12_26_9": last_row.get('MACD_12_26_9'),
                     "MACDh_12_26_9": last_row.get('MACDh_12_26_9'), "MACDs_12_26_9": last_row.get('MACDs_12_26_9'),
                 }
+            
             fundamentals = {
                 "Preço Atual": info.get('currentPrice'), "P/L": info.get('trailingPE'),
                 "ROE": info.get('returnOnEquity'), "Dívida/Patrimônio": info.get('debtToEquity'),
                 "Dividend Yield": info.get('dividendYield'), "Margem Líquida": info.get('profitMargins'),
                 "Setor": info.get('sector'), "Resumo": info.get('longBusinessSummary')
             }
-            news = yf_ticker.news
-            recent_news = [item['title'] for item in news[:5] if 'title' in item] if news else ["Nenhuma notícia recente encontrada."]
+            
+            # --- REMOVEMOS A CHAMADA DE NOTÍCIAS ---
+            # news = yf_ticker.news
+            # recent_news = [item['title'] for item in news[:5] if 'title' in item] if news else ["Nenhuma notícia recente encontrada."]
+            recent_news = ["Notícias não disponíveis no modo de análise rápida."]
+            # -----------------------------------------
+
             logging.info(f"-> Dados para {ticker} obtidos com sucesso.")
             return {
                 "ticker": ticker, "historical_data": hist_df, "fundamental_data": fundamentals,
