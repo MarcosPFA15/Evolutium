@@ -9,7 +9,7 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'trading_app:home' %}">🤖 Evolutium AI</a>
+            <a class="navbar-brand" href="{% url 'trading_app:home' %}">Evolutium</a>
             <div class="d-flex">
                 {% if user.is_authenticated %}
                     <span class="navbar-text me-3">Olá, {{ user.username }}!</span>
