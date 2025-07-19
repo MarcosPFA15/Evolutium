@@ -58,8 +58,8 @@ Qualquer bug so me reportar :D
 Recomendo voces usarem uma vez por dia
 
 
-!!!!!!!
-ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO E NAO RECARREGA A PAGINA 
-!!!!!!!
+!!
+ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO (10-15MIN) POREM NAO RECARREGUE A PAGINA
+!!
 
 Disclaimer: Não me responsabilizo por perdas, use por sua conta e risco.
