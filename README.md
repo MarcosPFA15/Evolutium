@@ -18,20 +18,14 @@ Visual Studio: e aqui que a magica acontece Certifique-se de telo.
 
 Passo 1: 
 
-Baixar o Projeto: Abra seu terminal (NO VISUAL STUDIO) e clone o repositório do GitHub:
+Crie uma pasta e a abra no visual studio depois abra seu terminal (NO VISUAL STUDIO (CANTO SUPERIOR ESQUERDO)) e clone o repositório do GitHub:
 git clone https://github.com/MarcosPFA15/Evolutium.git
 Depois, entre na pasta do projeto:
 cd Evolutium/evolutium_project
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Passo 2: Configurar o Ambiente
-Crie um Ambiente Virtual:
-
-python -m venv venv
-venv\Scripts\activate  # No Windows
-
-source venv/bin/activate  # No macOS/Linux
+Passo 2:
 
 Instale as Dependências:
 O arquivo requirements.txt contém todas as bibliotecas que o projeto precisa. Instale-as com um único comando:
@@ -52,4 +46,11 @@ Agora você está pronto para iniciar o servidor local:
 
 python manage.py runserver
 
-O terminal mostrará um link abra este link no seu navegador para acessar o aplicativo.
+O terminal mostrará um link abra este link no seu navegador para acessar o aplicativo normalmente é assim: http://###.#.#.#:####/ so que as tagas são numeros.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Qualquer bug so me reportar :D
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO E NAO RECARREGA A PAGINA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
