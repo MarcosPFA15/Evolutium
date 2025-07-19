@@ -1,0 +1,116 @@
+{% extends 'trading_app/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Seu Painel de Controle</h2>
+
+<!-- Exibe mensagens de erro/sucesso -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <!-- Coluna do Portfólio -->
+    <div class="col-md-7">
+        <div class="card mb-4">
+            <div class="card-header fw-bold">
+                Resumo do Portfólio
+            </div>
+            <div class="card-body">
+                <h3>Saldo em Conta: <span class="text-success">R$ {{ portfolio.balance|floatformat:2 }}</span></h3>
+                
+                <!-- Formulário de Ajuste de Saldo com os novos botões -->
+                <form action="{% url 'trading_app:update_balance' %}" method="post" class="d-flex flex-wrap align-items-center mt-3">
+                    {% csrf_token %}
+                    <span class="me-2">Ajustar Saldo:</span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="submit" name="amount" value="1000" class="btn btn-outline-success">+1000</button>
+                        <button type="submit" name="amount" value="100" class="btn btn-outline-success">+100</button>
+                        <button type="submit" name="amount" value="10" class="btn btn-outline-success">+10</button>
+                        <button type="submit" name="amount" value="1" class="btn btn-outline-success">+1</button>
+                        <button type="submit" name="amount" value="-1" class="btn btn-outline-danger">-1</button>
+                        <button type="submit" name="amount" value="-10" class="btn btn-outline-danger">-10</button>
+                        <button type="submit" name="amount" value="-100" class="btn btn-outline-danger">-100</button>
+                        <button type="submit" name="amount" value="-1000" class="btn btn-outline-danger">-1000</button>
+                    </div>
+                </form>
+                <hr>
+
+                <h5 class="card-title">Posições Atuais:</h5>
+                {% if positions %}
+                    <ul class="list-group">
+                        {% for pos in positions %}
+                            <li class="list-group-item">{{ pos.quantity }}x {{ pos.ticker }} @ R$ {{ pos.buy_price|floatformat:2 }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">Nenhuma posição em carteira.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Coluna de Análise e Ações -->
+    <div class="col-md-5">
+        <div class="card mb-4">
+            <div class="card-header fw-bold">
+                Análise de Mercado com IA
+            </div>
+            <div class="card-body">
+                <p>Clique para que a IA analise seu portfólio e o mercado para sugerir a próxima ação.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Analisar e Otimizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seção de Resultados -->
+        {% if recommendation %}
+        <div class="card">
+            <div class="card-header fw-bold text-white {% if recommendation.action == 'BUY' %}bg-success{% elif recommendation.action == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">
+                Plano de Ação Recomendado
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    Ação: <span class="text-primary">{{ recommendation.action }} {{ recommendation.ticker }}</span>
+                </h5>
+                <p><strong>Justificativa da IA:</strong> {{ recommendation.rationale }}</p>
+
+                {% if recommendation.action != 'HOLD' %}
+                <form action="{% url 'trading_app:execute_trade' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="{{ recommendation.action }}">
+                    <input type="hidden" name="ticker" value="{{ recommendation.ticker }}">
+                    
+                    {% if recommendation.action == 'BUY' %}
+                        <input type="hidden" name="quantity" value="{{ recommendation.suggested_quantity }}">
+                        <input type="hidden" name="price" value="{{ recommendation.current_price }}">
+                        <div class="alert alert-info">
+                            <strong>Sugestão:</strong> Comprar <strong>{{ recommendation.suggested_quantity }} ações</strong>.
+                        </div>
+                    {% elif recommendation.action == 'SELL' %}
+                        <input type="hidden" name="quantity" value="{{ recommendation.quantity }}">
+                        <input type="hidden" name="price" value="{{ recommendation.current_price }}">
+                        <div class="alert alert-warning">
+                            <strong>Sugestão:</strong> Vender <strong>{{ recommendation.quantity }} ações</strong>.
+                        </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-success">Aprovar</button>
+                        <a href="{% url 'trading_app:dashboard' %}" class="btn btn-secondary">Ignorar</a>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
