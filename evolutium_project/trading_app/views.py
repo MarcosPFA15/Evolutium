@@ -7,6 +7,7 @@ from decimal import Decimal, InvalidOperation
 import math
 import yfinance as yf
 from django.http import HttpResponseNotAllowed
+import logging # <-- A CORREÇÃO ESTÁ AQUI
 
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Portfolio, UserProfile, Position, TradeHistory
@@ -74,6 +75,15 @@ def dashboard_view(request):
             synthesis_engine = SynthesisEngine(api_key=api_key)
             data_provider = DataProvider()
             
+            market_context = {"ibov_change": "Dados indisponíveis"}
+            try:
+                ibov_hist = yf.Ticker("^BVSP").history(period="7d")
+                if not ibov_hist.empty and len(ibov_hist) > 1:
+                    change = (ibov_hist['Close'].iloc[-1] / ibov_hist['Close'].iloc[0]) - 1
+                    market_context = {"ibov_change": f"{change:.2%}"}
+            except Exception as e:
+                logging.error(f"Falha ao buscar contexto do Ibovespa: {e}")
+
             positions_with_data = []
             for pos in portfolio.positions.all():
                 market_data = data_provider.get_market_data(pos.ticker)
@@ -85,9 +95,8 @@ def dashboard_view(request):
             tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
             candidates = [data for ticker in config.TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
             
-            ibov_hist = yf.Ticker("^BVSP").history(period="7d")
-            change = (ibov_hist['Close'].iloc[-1] / ibov_hist['Close'].iloc[0]) - 1
-            market_context = {"ibov_change": f"{change:.2%}"}
+            trade_history_qs = portfolio.trade_history.order_by('-timestamp')[:5]
+            trade_history = list(trade_history_qs.values('timestamp', 'ticker', 'side', 'quantity', 'price'))
 
             action_plan = synthesis_engine.get_portfolio_optimization_plan(positions_with_data, candidates, market_context)
             
