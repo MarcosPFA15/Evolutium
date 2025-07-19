@@ -1,4 +1,4 @@
-# trading_app/apps.py
+
 from django.apps import AppConfig
 
 class TradingAppConfig(AppConfig):

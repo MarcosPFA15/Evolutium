@@ -5,7 +5,7 @@
 {% block content %}
 <h2 class="mb-4">Seu Painel de Controle</h2>
 
-<!-- Exibe mensagens de erro/sucesso -->
+
 {% if messages %}
     {% for message in messages %}
         <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">{{ message }}</div>
@@ -13,7 +13,6 @@
 {% endif %}
 
 <div class="row">
-    <!-- Coluna do Portfólio -->
     <div class="col-md-7">
         <div class="card mb-4">
             <div class="card-header fw-bold">
@@ -21,8 +20,6 @@
             </div>
             <div class="card-body">
                 <h3>Saldo em Conta: <span class="text-success">R$ {{ portfolio.balance|floatformat:2 }}</span></h3>
-                
-                <!-- Formulário de Ajuste de Saldo com os novos botões -->
                 <form action="{% url 'trading_app:update_balance' %}" method="post" class="d-flex flex-wrap align-items-center mt-3">
                     {% csrf_token %}
                     <span class="me-2">Ajustar Saldo:</span>
@@ -52,8 +49,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Coluna de Análise e Ações -->
     <div class="col-md-5">
         <div class="card mb-4">
             <div class="card-header fw-bold">
@@ -70,7 +65,6 @@
             </div>
         </div>
 
-        <!-- Seção de Resultados -->
         {% if recommendation %}
         <div class="card">
             <div class="card-header fw-bold text-white {% if recommendation.action == 'BUY' %}bg-success{% elif recommendation.action == 'SELL' %}bg-danger{% else %}bg-secondary{% endif %}">

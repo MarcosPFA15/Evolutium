@@ -5,11 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Chaves de API
-API_KEY = os.getenv("BTG_API_KEY")
-SECRET_KEY = os.getenv("BTG_SECRET_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configurações Gerais
+# ATIVOS SENDO MONITORADOS:
 TICKERS_TO_MONITOR = [
     "AALR3",
     "ABCB4",
@@ -353,7 +351,7 @@ TICKERS_TO_MONITOR = [
 # Parâmetros de Risco de Compra
 RISK_PERCENTAGE_PER_TRADE = 0.25
 
-# --- NOVOS PARÂMETROS DE RISCO DE POSIÇÃO ---
+
 # Define os gatilhos automáticos de venda.
 # Use valores decimais (ex: -0.10 para -10%).
 STOP_LOSS_PERCENTAGE = -0.10  # Vender automaticamente se a perda atingir 10%

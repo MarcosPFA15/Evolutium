@@ -4,14 +4,12 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8"> <!-- Aumentei a largura para o texto caber melhor -->
+    <div class="col-md-8">
         <div class="card">
             <div class="card-body">
                 <h2 class="card-title text-center">Crie sua Conta</h2>
                 <form method="post">
                     {% csrf_token %}
-                    
-                    <!-- Renderiza os campos do formulário, exceto o de termos -->
                     {{ form.username.label_tag }} {{ form.username }}
                     <small class="form-text text-muted">{{ form.username.help_text|safe }}</small>
                     {{ form.username.errors }}
@@ -36,8 +34,6 @@
                     {{ form.initial_balance.errors }}
 
                     <hr>
-
-                    <!-- Seção do Termo de Responsabilidade -->
                     <div class="card my-3">
                         <div class="card-header">
                             <strong>Termo de Isenção de Responsabilidade</strong>
@@ -54,8 +50,6 @@
                             </p>
                         </div>
                     </div>
-
-                    <!-- Campo de Checkbox para o Termo -->
                     <div class="form-check mb-3">
                         {{ form.terms_agreement }}
                         <label class="form-check-label" for="{{ form.terms_agreement.id_for_label }}">

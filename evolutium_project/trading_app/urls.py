@@ -10,8 +10,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    
-    # --- NOVAS ROTAS PARA AÇÕES ---
+
     path('execute_trade/', views.execute_trade_view, name='execute_trade'),
     path('update_balance/', views.update_balance_view, name='update_balance'),
 ]

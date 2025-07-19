@@ -45,7 +45,6 @@ class DataProvider:
             # --- CHAMADA DE NOTÍCIAS RESTAURADA ---
             news = yf_ticker.news
             recent_news = [item['title'] for item in news[:5] if 'title' in item] if news else ["Nenhuma notícia recente encontrada."]
-            # -----------------------------------------
 
             logging.info(f"-> Dados para {ticker} obtidos com sucesso.")
             return {
@@ -55,8 +54,6 @@ class DataProvider:
         except Exception as e:
             logging.error(f"[DATA PROV] Falha ao obter dados do yfinance para {ticker}: {e}", exc_info=True)
             return None
-
-# ... (A classe BacktestDataProvider continua a mesma) ...
 
 class BacktestDataProvider:
     def __init__(self, tickers: list, start_date: str, end_date: str):
@@ -78,11 +75,8 @@ class BacktestDataProvider:
                     logging.warning(f" -> Nenhum dado encontrado para {ticker} no período.")
                     continue
 
-                # --- A SOLUÇÃO DEFINITIVA ---
-                # Se as colunas forem um MultiIndex (tuplas), achata para um Index simples.
                 if isinstance(df.columns, pd.MultiIndex):
                     df.columns = df.columns.droplevel(1)
-                # -----------------------------
 
                 df.ta.sma(length=21, append=True)
                 df.ta.sma(length=50, append=True)

@@ -17,7 +17,6 @@ class SynthesisEngine:
             
             genai.configure(api_key=final_api_key)
 
-            # --- BLOCO DE CÓDIGO CORRIGIDO: A DEFINIÇÃO ESTÁ DE VOLTA ---
             safety_settings = {
                 HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
                 HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
