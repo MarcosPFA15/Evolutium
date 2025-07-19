@@ -124,3 +124,5 @@ class BacktestDataProvider:
             "technical_indicators": technical_indicators,
             "recent_news": ["Notícias não disponíveis em modo de backtest."]
         }
+    
+    
