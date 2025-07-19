@@ -4,14 +4,14 @@ O Evolutium é uma ia que verifica 600+ de ativos e escolhe a melhor opção, al
 não se perder, ela tambem verifica qual dos ativos seria bom para vender, se quiserem dou uma explicação melhor de como ela funciona, pra finalizar
 caso queriam um ativo que nao esta na lista do config.py é so me falar que eu adiciono para todos.
 
-Como Executar o Evolutium Ia Localmente?
-
 Este guia irá ajudá-lo a configurar e executar o aplicativo Evolutium AI no seu próprio computador.
 
 Pré-requisitos:
 
 Python: Certifique-se de ter o Python instalado.
+
 Git: Você precisará do Git para clonar o repositório da pra baixalo em git-scm.com.
+
 Visual Studio: e aqui que a magica acontece Certifique-se de telo.
 
 --------------------------------------------------------------------------------------------------------------------------------
@@ -19,8 +19,11 @@ Visual Studio: e aqui que a magica acontece Certifique-se de telo.
 Passo 1: 
 
 Crie uma pasta e a abra no visual studio depois abra seu terminal (NO VISUAL STUDIO (CANTO SUPERIOR ESQUERDO)) e clone o repositório do GitHub:
+
 git clone https://github.com/MarcosPFA15/Evolutium.git
+
 Depois, entre na pasta do projeto:
+
 cd Evolutium/evolutium_project
 
 --------------------------------------------------------------------------------------------------------------------------------
@@ -46,11 +49,13 @@ Agora você está pronto para iniciar o servidor local:
 
 python manage.py runserver
 
-O terminal mostrará um link abra este link no seu navegador para acessar o aplicativo normalmente é assim: http://###.#.#.#:####/ so que as tagas são numeros.
+O terminal mostrará um link abra este link no seu navegador para acessar o aplicativo normalmente é assim: http://###.#.#.#:####/ so que as tags são numeros.
 
 --------------------------------------------------------------------------------------------------------------------------------
 
 Qualquer bug so me reportar :D
 
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO E NAO RECARREGA A PAGINA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!
+ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO E NAO RECARREGA A PAGINA 
+!!!!!!!
