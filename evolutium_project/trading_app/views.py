@@ -7,7 +7,7 @@ from decimal import Decimal, InvalidOperation
 import math
 import yfinance as yf
 from django.http import HttpResponseNotAllowed
-import logging # <-- A CORREÇÃO ESTÁ AQUI
+import logging
 
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Portfolio, UserProfile, Position, TradeHistory
@@ -75,6 +75,7 @@ def dashboard_view(request):
             synthesis_engine = SynthesisEngine(api_key=api_key)
             data_provider = DataProvider()
             
+            # 1. Busca o contexto de mercado e o histórico de transações
             market_context = {"ibov_change": "Dados indisponíveis"}
             try:
                 ibov_hist = yf.Ticker("^BVSP").history(period="7d")
@@ -84,41 +85,46 @@ def dashboard_view(request):
             except Exception as e:
                 logging.error(f"Falha ao buscar contexto do Ibovespa: {e}")
 
-            positions_with_data = []
-            for pos in portfolio.positions.all():
-                market_data = data_provider.get_market_data(pos.ticker)
-                if market_data:
-                    market_data.update({'buy_price': float(pos.buy_price), 'quantity': pos.quantity})
-                    market_data['current_price'] = market_data['fundamental_data'].get('Preço Atual', 0)
-                    positions_with_data.append(market_data)
-
-            tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
-            candidates = [data for ticker in config.TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
-            
             trade_history_qs = portfolio.trade_history.order_by('-timestamp')[:5]
             trade_history = list(trade_history_qs.values('timestamp', 'ticker', 'side', 'quantity', 'price'))
 
-            action_plan = synthesis_engine.get_portfolio_optimization_plan(positions_with_data, candidates, market_context)
+            # 2. Avalia as posições atuais para uma possível VENDA
+            recommendation = None
+            for pos in portfolio.positions.all():
+                market_data = data_provider.get_market_data(pos.ticker)
+                if market_data:
+                    current_pos_dict = {'ticker': pos.ticker, 'quantity': pos.quantity, 'buy_price': float(pos.buy_price)}
+                    sell_decision = synthesis_engine.should_sell_position(market_data, current_pos_dict, trade_history, market_context)
+                    if sell_decision.get("decision") == "SELL":
+                        recommendation = {
+                            'action': 'SELL', 'ticker': pos.ticker,
+                            'rationale': sell_decision.get('rationale'), 'quantity': pos.quantity,
+                            'current_price': market_data['fundamental_data'].get('Preço Atual', 0)
+                        }
+                        break # Para na primeira recomendação de venda que encontrar
             
-            recommendation = next((action for action in action_plan if action.get('action') in ['BUY', 'SELL']), action_plan[0] if action_plan else None)
-            
-            if recommendation:
-                if recommendation.get('action') == 'BUY':
-                    ticker = recommendation.get('ticker')
-                    asset_data = next((c for c in candidates if c['ticker'] == ticker), None)
-                    price = asset_data['fundamental_data'].get('Preço Atual', 0) if asset_data else 0
-                    if price > 0:
-                        risk_value = portfolio.balance * Decimal(str(config.RISK_PERCENTAGE_PER_TRADE))
-                        quantity = math.floor(risk_value / Decimal(str(price)))
-                        recommendation['suggested_quantity'] = quantity
-                        recommendation['current_price'] = price
-                
-                elif recommendation.get('action') == 'SELL':
-                    ticker = recommendation.get('ticker')
-                    pos_data = next((p for p in positions_with_data if p['ticker'] == ticker), None)
-                    if pos_data:
-                        recommendation['quantity'] = pos_data.get('quantity')
-                        recommendation['current_price'] = pos_data.get('current_price')
+            # 3. Se não houver recomendação de venda, procura por uma COMPRA
+            if not recommendation:
+                tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
+                candidates = [data for ticker in config.TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
+                if candidates:
+                    buy_decision = synthesis_engine.decide_best_investment(candidates, trade_history, market_context)
+                    if buy_decision.get("decision") == "BUY":
+                        ticker = buy_decision.get('ticker')
+                        asset_data = next((c for c in candidates if c['ticker'] == ticker), None)
+                        price = asset_data['fundamental_data'].get('Preço Atual', 0) if asset_data else 0
+                        if price > 0:
+                            risk_value = portfolio.balance * Decimal(str(config.RISK_PERCENTAGE_PER_TRADE))
+                            quantity = math.floor(risk_value / Decimal(str(price)))
+                            recommendation = {
+                                'action': 'BUY', 'ticker': ticker,
+                                'rationale': buy_decision.get('rationale'),
+                                'suggested_quantity': quantity, 'current_price': price
+                            }
+
+            # 4. Se ainda não houver recomendação, a decisão é HOLD
+            if not recommendation:
+                recommendation = {'action': 'HOLD', 'ticker': 'ALL', 'rationale': 'Nenhuma oportunidade clara de compra ou venda foi identificada no momento.'}
 
             context['recommendation'] = recommendation
 
