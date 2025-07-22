@@ -1,7 +1,7 @@
-# synthesis_engine.py
+# core_logic/synthesis_engine.py
 import google.generativeai as genai
 import json
-from . import config
+from . import config  # <-- ESTA É A ÚNICA LINHA QUE MUDA DA SUA VERSÃO
 import logging
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
@@ -9,6 +9,7 @@ class SynthesisEngine:
     def  __init__(self, api_key=None):
         self.model = None
         try:
+            # Prioriza a chave passada diretamente. Se não houver, busca no config.
             final_api_key = api_key if api_key else config.GEMINI_API_KEY
 
             if not final_api_key:
