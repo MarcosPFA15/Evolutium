@@ -12,9 +12,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Portfolio, UserProfile, Position, TradeHistory
 from .forms import CustomUserCreationForm
 
+# --- IMPORTAÇÕES CORRIGIDAS E FINALIZADAS ---
 from core_logic.synthesis_engine import SynthesisEngine
 from core_logic.data_provider import DataProvider
-from core_logic import config # <-- A IMPORTAÇÃO CORRETA E DEFINITIVA
+# Importa a constante específica que precisamos, para evitar qualquer ambiguidade
+from core_logic.config import TICKERS_TO_MONITOR, RISK_PERCENTAGE_PER_TRADE
+# ---------------------------------------------
 
 def home(request):
     if request.user.is_authenticated:
@@ -97,7 +100,7 @@ def dashboard_view(request):
             best_buy_recommendation = None
             if not best_sell_recommendation:
                 tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
-                candidates = [data for ticker in config.TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
+                candidates = [data for ticker in TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
                 if candidates:
                     buy_decision = synthesis_engine.decide_best_investment(candidates, trade_history, market_context)
                     if buy_decision.get("decision") == "BUY":
@@ -105,19 +108,23 @@ def dashboard_view(request):
                         asset_data = next((c for c in candidates if c['ticker'] == ticker), None)
                         price = asset_data['fundamental_data'].get('Preço Atual', 0) if asset_data else 0
                         if price > 0:
-                            risk_value = portfolio.balance * Decimal(str(config.RISK_PERCENTAGE_PER_TRADE))
+                            # Usa a constante importada diretamente
+                            risk_value = portfolio.balance * Decimal(str(RISK_PERCENTAGE_PER_TRADE))
                             quantity = math.floor(risk_value / Decimal(str(price)))
-                            best_buy_recommendation = {
-                                'action': 'BUY', 'ticker': ticker, 'rationale': buy_decision.get('rationale'),
-                                'suggested_quantity': quantity, 'current_price': price
-                            }
+                            
+                            # Só cria a recomendação se a quantidade for maior que zero
+                            if quantity > 0:
+                                best_buy_recommendation = {
+                                    'action': 'BUY', 'ticker': ticker, 'rationale': buy_decision.get('rationale'),
+                                    'suggested_quantity': quantity, 'current_price': price
+                                }
 
             if best_sell_recommendation:
                 context['recommendation'] = best_sell_recommendation
             elif best_buy_recommendation:
                 context['recommendation'] = best_buy_recommendation
             else:
-                context['recommendation'] = {'action': 'HOLD', 'ticker': 'ALL', 'rationale': 'Nenhuma oportunidade clara foi identificada.'}
+                context['recommendation'] = {'action': 'HOLD', 'ticker': 'ALL', 'rationale': 'Nenhuma oportunidade clara de compra ou venda foi identificada no momento.'}
 
         except Exception as e:
             messages.error(request, f"Ocorreu um erro durante a análise: {e}")
