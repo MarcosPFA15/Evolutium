@@ -39,11 +39,12 @@ caso pip não seja reconhecido utilize:
 
 py -m pip install -r requirements.txt
 
-e caso tanbem não funciona voce precisa corrigir o py com:
+e caso tambem não funciona voce precisa corrigir o py com:
 
 py -m ensurepip --upgrade
 
 com upgrade terminado é so instalar os requirements com o
+
 py -m pip install -r requirements.txt
 
 ---------------------------------------------------------------------------------------------------------------------------------
@@ -66,8 +67,7 @@ O terminal mostrará um link abra este link no seu navegador para acessar o apli
 
 Qualquer bug so me reportar :D
 
-Recomendo voces usarem uma vez por dia
-
+Recomendo voces usarem uma vez por dia e obrigado por baixar
 
 !!
 ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO (10-15MIN) POREM NAO RECARREGUE A PAGINA
