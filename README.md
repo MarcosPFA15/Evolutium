@@ -35,6 +35,17 @@ O arquivo requirements.txt contém todas as bibliotecas que o projeto precisa. I
 
 pip install -r requirements.txt
 
+caso pip não seja reconhecido utilize: 
+
+py -m pip install -r requirements.txt
+
+e caso tanbem não funciona voce precisa corrigir o py com:
+
+py -m ensurepip --upgrade
+
+com upgrade terminado é so instalar os requirements com o
+py -m pip install -r requirements.txt
+
 ---------------------------------------------------------------------------------------------------------------------------------
 
 Passo 3: Preparar o Banco de Dados
