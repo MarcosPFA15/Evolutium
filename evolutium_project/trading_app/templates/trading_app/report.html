@@ -1,0 +1,125 @@
+{% extends 'trading_app/base.html' %}
+
+{% block title %}Relatório de Desempenho{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Relatório de Desempenho</h2>
+
+<!-- Seção de KPIs -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card kpi-card">
+            <div class="card-body">
+                <h6 class="text-muted">Lucro / Prejuízo Total</h6>
+                <p class="kpi-value {% if total_pl > 0 %}text-success{% else %}text-danger{% endif %}">
+                    R$ {{ total_pl|floatformat:2 }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card kpi-card">
+            <div class="card-body">
+                <h6 class="text-muted">Taxa de Acerto</h6>
+                <p class="kpi-value">{{ win_rate|floatformat:1 }}%</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card kpi-card">
+            <div class="card-body">
+                <h6 class="text-muted">Total de Operações</h6>
+                <p class="kpi-value">{{ total_trades }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico de Desempenho -->
+<div class="card mb-4">
+    <div class="card-header">
+        Evolução do Portfólio
+    </div>
+    <div class="card-body">
+        <canvas id="performanceChart"></canvas>
+    </div>
+</div>
+
+<!-- Tabela de Histórico de Trades -->
+<div class="card">
+    <div class="card-header">
+        Histórico de Operações
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Data</th>
+                        <th scope="col">Ativo</th>
+                        <th scope="col">Operação</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Preço (R$)</th>
+                        <th scope="col">Valor Total (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trade in trade_history %}
+                    <tr>
+                        <td>{{ trade.timestamp|date:"d/m/Y H:i" }}</td>
+                        <td>{{ trade.ticker }}</td>
+                        <td>
+                            <span class="badge {% if trade.side == 'BUY' %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ trade.side }}
+                            </span>
+                        </td>
+                        <td>{{ trade.quantity }}</td>
+                        <td>{{ trade.price|floatformat:2 }}</td>
+                        <td>{% widthratio trade.price 1 trade.quantity as total %}{{ total|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Nenhuma operação registrada.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const chartData = JSON.parse('{{ chart_data|safe }}');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Valor do Portfólio (R$)',
+                data: chartData.data,
+                borderColor: 'rgba(37, 117, 252, 1)',
+                backgroundColor: 'rgba(37, 117, 252, 0.2)',
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return 'R$ ' + value.toLocaleString('pt-BR');
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -4,20 +4,17 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from decimal import Decimal, InvalidOperation
-import math
-import yfinance as yf
-from django.http import HttpResponseNotAllowed
-
+import json
+from django.http import HttpResponseNotAllowed, JsonResponse
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils import timezone
 from .models import Portfolio, UserProfile, Position, TradeHistory
 from .forms import CustomUserCreationForm
+from . import tasks
 
-# --- IMPORTAÇÕES CORRIGIDAS E FINALIZADAS ---
-from core_logic.synthesis_engine import SynthesisEngine
-from core_logic.data_provider import DataProvider
-# Importa a constante específica que precisamos, para evitar qualquer ambiguidade
-from core_logic.config import TICKERS_TO_MONITOR, RISK_PERCENTAGE_PER_TRADE
-# ---------------------------------------------
+# Import para tarefas em segundo plano
+import django_rq 
+from rq.job import Job
 
 def home(request):
     if request.user.is_authenticated:
@@ -60,83 +57,51 @@ def logout_view(request):
 @login_required
 def dashboard_view(request):
     portfolio = Portfolio.objects.get(user=request.user)
-    user_profile = UserProfile.objects.get(user=request.user)
-    
     context = {
         'portfolio': portfolio,
         'positions': portfolio.positions.all(),
-        'recommendation': None
     }
-
-    if request.method == 'POST':
-        api_key = user_profile.gemini_api_key
-        if not api_key:
-            messages.error(request, "Você precisa salvar sua chave de API do Gemini.")
-            return render(request, 'trading_app/dashboard.html', context)
-        try:
-            synthesis_engine = SynthesisEngine(api_key=api_key)
-            data_provider = DataProvider()
-            
-            ibov_hist = yf.Ticker("^BVSP").history(period="7d")
-            change = (ibov_hist['Close'].iloc[-1] / ibov_hist['Close'].iloc[0]) - 1
-            market_context = {"ibov_change": f"{change:.2%}"}
-            
-            trade_history_qs = portfolio.trade_history.order_by('-timestamp')[:5]
-            trade_history = list(trade_history_qs.values('timestamp', 'ticker', 'side', 'quantity', 'price'))
-
-            best_sell_recommendation = None
-            for pos in portfolio.positions.all():
-                market_data = data_provider.get_market_data(pos.ticker)
-                if market_data:
-                    current_pos_dict = {'ticker': pos.ticker, 'quantity': pos.quantity, 'buy_price': float(pos.buy_price)}
-                    sell_decision = synthesis_engine.should_sell_position(market_data, current_pos_dict, trade_history, market_context)
-                    if sell_decision.get("decision") == "SELL":
-                        best_sell_recommendation = {
-                            'action': 'SELL', 'ticker': pos.ticker, 'rationale': sell_decision.get('rationale'),
-                            'quantity': pos.quantity, 'current_price': market_data['fundamental_data'].get('Preço Atual', 0)
-                        }
-                        break
-
-            best_buy_recommendation = None
-            if not best_sell_recommendation:
-                tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
-                candidates = [data for ticker in TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
-                if candidates:
-                    buy_decision = synthesis_engine.decide_best_investment(candidates, trade_history, market_context)
-                    if buy_decision.get("decision") == "BUY":
-                        ticker = buy_decision.get('ticker')
-                        asset_data = next((c for c in candidates if c['ticker'] == ticker), None)
-                        price = asset_data['fundamental_data'].get('Preço Atual', 0) if asset_data else 0
-                        if price > 0:
-                            # Usa a constante importada diretamente
-                            risk_value = portfolio.balance * Decimal(str(RISK_PERCENTAGE_PER_TRADE))
-                            quantity = math.floor(risk_value / Decimal(str(price)))
-                            
-                            # Só cria a recomendação se a quantidade for maior que zero
-                            if quantity > 0:
-                                best_buy_recommendation = {
-                                    'action': 'BUY', 'ticker': ticker, 'rationale': buy_decision.get('rationale'),
-                                    'suggested_quantity': quantity, 'current_price': price
-                                }
-
-            if best_sell_recommendation:
-                context['recommendation'] = best_sell_recommendation
-            elif best_buy_recommendation:
-                context['recommendation'] = best_buy_recommendation
-            else:
-                context['recommendation'] = {'action': 'HOLD', 'ticker': 'ALL', 'rationale': 'Nenhuma oportunidade clara de compra ou venda foi identificada no momento.'}
-
-        except Exception as e:
-            messages.error(request, f"Ocorreu um erro durante a análise: {e}")
-
     return render(request, 'trading_app/dashboard.html', context)
+
+@login_required
+def start_analysis_view(request):
+    if request.method == 'POST':
+        user_profile = UserProfile.objects.get(user=request.user)
+        if not user_profile.gemini_api_key:
+            return JsonResponse({'error': 'Você precisa salvar sua chave de API do Gemini primeiro.'}, status=400)
+
+        queue = django_rq.get_queue('default')
+        job = queue.enqueue(tasks.perform_full_analysis, request.user.id)
+        return JsonResponse({'job_id': job.id})
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@login_required
+def check_analysis_result_view(request, job_id):
+    queue = django_rq.get_queue('default')
+    try:
+        job = Job.fetch(job_id, connection=queue.connection)
+        
+        if job.is_finished:
+            result = job.result
+            if isinstance(result, dict) and result.get("error"):
+                 return JsonResponse({'status': 'failed', 'message': result.get("message", "Erro desconhecido")})
+            return JsonResponse({'status': 'finished', 'result': result})
+        elif job.is_failed:
+            return JsonResponse({'status': 'failed', 'message': 'A tarefa falhou ao ser executada.'})
+        else:
+            return JsonResponse({'status': job.get_status()}) # 'queued' or 'started'
+            
+    except Exception as e:
+        return JsonResponse({'status': 'failed', 'message': str(e)}, status=500)
 
 @login_required
 def execute_trade_view(request):
     if request.method == 'POST':
         portfolio = Portfolio.objects.get(user=request.user)
-        action = request.POST.get('action'); ticker = request.POST.get('ticker')
-        quantity = int(request.POST.get('quantity')); price_str = request.POST.get('price', '0').replace(',', '.')
+        action = request.POST.get('action')
+        ticker = request.POST.get('ticker')
+        quantity = int(request.POST.get('quantity'))
+        price_str = request.POST.get('price', '0').replace(',', '.')
         try:
             price = Decimal(price_str)
         except InvalidOperation:
@@ -181,3 +146,70 @@ def update_balance_view(request):
             messages.error(request, "Não é possível deixar o saldo negativo.")
         return redirect('trading_app:dashboard')
     return HttpResponseNotAllowed(['POST'])
+
+@login_required
+def report_view(request):
+    portfolio = Portfolio.objects.get(user=request.user)
+    trade_history = portfolio.trade_history.order_by('timestamp')
+    
+    # Calcular KPIs
+    total_trades = 0
+    winning_trades = 0
+    total_pl = Decimal('0.0')
+    buy_operations = {}
+
+    for trade in trade_history:
+        if trade.side == 'BUY':
+            if trade.ticker not in buy_operations:
+                buy_operations[trade.ticker] = []
+            buy_operations[trade.ticker].append(trade)
+        elif trade.side == 'SELL':
+            if trade.ticker in buy_operations and buy_operations[trade.ticker]:
+                total_trades += 1
+                buy_trade = buy_operations[trade.ticker].pop(0) # FIFO
+                pl = (trade.price - buy_trade.price) * trade.quantity
+                total_pl += pl
+                if pl > 0:
+                    winning_trades += 1
+    
+    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
+
+    # Preparar dados para o gráfico
+    chart_labels = []
+    chart_data = []
+    current_balance = portfolio.balance # Começa com o saldo atual
+    
+    # Simula o balanço "para trás" a partir do saldo atual e trades
+    temp_balance = portfolio.balance
+    positions_value = sum(pos.quantity * pos.buy_price for pos in portfolio.positions.all())
+    initial_total_value = temp_balance + positions_value
+
+    # Adiciona um ponto inicial
+    if trade_history:
+        start_date = trade_history.first().timestamp - timezone.timedelta(days=1)
+        chart_labels.append(start_date.strftime('%d/%m/%Y'))
+        # Tenta estimar um valor inicial
+        # Esta é uma simplificação. Um cálculo mais preciso exigiria o saldo inicial no momento do cadastro.
+        chart_data.append(float(initial_total_value - total_pl))
+
+
+    for trade in trade_history:
+        trade_value = trade.price * trade.quantity
+        if trade.side == 'BUY':
+            current_balance -= trade_value
+        else:
+            current_balance += trade_value
+        
+        chart_labels.append(trade.timestamp.strftime('%d/%m/%Y'))
+        # O valor do portfólio é o saldo + valor das posições (simplificado aqui)
+        # Para um gráfico preciso, precisaríamos de snapshots diários do valor das posições
+        chart_data.append(float(current_balance))
+
+    context = {
+        'trade_history': reversed(trade_history), # Mostra os mais recentes primeiro na tabela
+        'total_pl': total_pl,
+        'win_rate': win_rate,
+        'total_trades': total_trades,
+        'chart_data': json.dumps({'labels': chart_labels, 'data': chart_data})
+    }
+    return render(request, 'trading_app/report.html', context)

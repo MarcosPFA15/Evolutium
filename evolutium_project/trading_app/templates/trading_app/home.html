@@ -1,13 +1,15 @@
 {% extends 'trading_app/base.html' %}
 
-{% block title %}Bem-vindo{% endblock %}
+{% block title %}Bem-vindo ao Evolutium AI{% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-white rounded-3 text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Bem-vindo ao Evolutium</h1>
-        <p class="fs-4">Seu assistente de trading de ativos com IA, cadastre-se ou faça login para começar a otimizar seu portfólio.</p>
-        <a href="{% url 'trading_app:register' %}" class="btn btn-primary btn-lg">Comece Agora</a>
+<div class="home-hero">
+    <div class="container py-5">
+        <h1 class="display-4 fw-bold">Bem-vindo ao Evolutium AI</h1>
+        <p class="fs-4 col-md-10 mx-auto">
+            Seu assistente inteligente para simulação de trading de ativos. Otimize seu portfólio usando o poder da Inteligência Artificial.
+        </p>
+        <a href="{% url 'trading_app:register' %}" class="btn btn-primary btn-lg mt-3">Comece a sua jornada agora</a>
     </div>
 </div>
 {% endblock %}

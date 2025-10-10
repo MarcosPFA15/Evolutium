@@ -1,0 +1,213 @@
+/* static/trading_app/css/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #6a11cb;
+    --secondary-color: #2575fc;
+    --dark-bg: #121212;
+    --light-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-muted: #888;
+    --card-bg: #2a2a2a;
+    --border-color: #444;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --font-family: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding-top: 70px; /* Space for fixed navbar */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar {
+    background: rgba(30, 30, 30, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.3s ease;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1030;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text; /* Correção adicionada aqui */
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.nav-link:hover {
+    color: var(--secondary-color);
+}
+
+.main-container {
+    flex: 1;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.card-header, .card-footer {
+    background-color: var(--light-bg);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+}
+.card-footer {
+    border-bottom: none;
+    border-top: 1px solid var(--border-color);
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: 600;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.5);
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+.btn-outline-secondary:hover {
+    background-color: var(--border-color);
+    color: white;
+}
+
+/* Form Styles */
+.form-control, .form-select {
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+.form-control:focus {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.25);
+}
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+.form-label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.form-check-input {
+    background-color: var(--light-bg);
+    border-color: var(--border-color);
+}
+
+/* Home Page Specific */
+.home-hero {
+    padding: 5rem 0;
+    text-align: center;
+    background: radial-gradient(circle, rgba(30,30,30,1) 0%, rgba(18,18,18,1) 100%);
+    border-radius: 12px;
+}
+
+/* Dashboard Specific */
+.kpi-card {
+    padding: 1.5rem;
+    text-align: center;
+}
+.kpi-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+.text-success { color: var(--success-color) !important; }
+.text-danger { color: var(--danger-color) !important; }
+
+/* Loader for AI analysis */
+.loader-container {
+    display: none; /* Hidden by default */
+    text-align: center;
+    padding: 2rem;
+}
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--secondary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#analysis-result .card {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+.alert-success { background-color: rgba(40, 167, 69, 0.2); color: #a3d9b1; }
+.alert-danger { background-color: rgba(220, 53, 69, 0.2); color: #f5b7bd; }
+.alert-info { background-color: rgba(23, 162, 184, 0.2); color: #9eeaf9; }
+.alert-warning { background-color: rgba(255, 193, 7, 0.2); color: #ffeeba; }
+
+footer.footer {
+    padding: 1.5rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    margin-top: 2rem;
+}
+
