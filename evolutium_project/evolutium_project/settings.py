@@ -1,4 +1,3 @@
-# evolutium_project/settings.py
 from pathlib import Path
 import os
 
@@ -67,27 +66,24 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
-USE_I18N = True
+USE_I1N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-# Ajustado para apontar para a nova pasta 'static' no nível do projeto
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-# Onde os arquivos serão coletados para produção
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_collected')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configuração do Redis e Django-RQ
 RQ_QUEUES = {
     'default': {
         'HOST': 'localhost',
         'PORT': 6379,
         'DB': 0,
-        'DEFAULT_TIMEOUT': 1800, # Timeout de 30 minutos por tarefa
+        'DEFAULT_TIMEOUT': -1,
+        'ASYNC': False,
     }
 }
-

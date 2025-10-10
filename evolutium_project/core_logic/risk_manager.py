@@ -1,5 +1,4 @@
-# core_logic/risk_manager.py
-from . import config # <-- A IMPORTAÇÃO CORRETA E DEFINITIVA
+from . import config
 import logging
 
 def is_trade_allowed(account_balance: float, open_positions: list, ticker_to_trade: str, trade_value: float, side: str) -> bool:

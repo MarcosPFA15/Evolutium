@@ -1,4 +1,4 @@
-# MEUS MANOS!!!!!!!!!!!
+# BEM VINDOO!!!!!!!!!!!
 
 O Evolutium é uma ia que verifica mais de 600 ativos da bolsa e escolhe a melhor opção, alem de criar uma conta com seu saldo e ativos ja comprados para voce
 não se perder, ela tambem verifica qual dos ativos seria bom para vender e cria relatorios, se quiserem dou uma explicação melhor de como ela funciona, para finalizar
@@ -11,8 +11,6 @@ Pré-requisitos:
 Python: Certifique-se de ter o Python instalado.
 
 Git: Você precisará do Git para clonar o repositório da pra baixalo em git-scm.com.
-
-Redis: Você PRECISA do redis para que a fila de tarefas em segundo plano funcione, vou deixar um tutorial no final do read me, ensinando a instalar o redis utilizando o docker.
 
 Visual Studio: e aqui que a magica acontece certifique-se de telo.
 
@@ -45,7 +43,7 @@ e caso tambem não funciona voce precisa corrigir o py com:
 
 py -m ensurepip --upgrade
 
-com upgrade terminado é so instalar os requirements com o
+com upgrade terminado é so instalar os requirements e depois do requiremets autaliza a api com o
 
 py -m pip install -r requirements.txt
 
@@ -60,21 +58,12 @@ python manage.py migrate
 
 Passo 4: Executar o Aplicativo!
 
-Inicia o servidor do redis (tutorial na instalação do redis)
-
-Apos isso execute:
-
-python manage.py migrate
-
 Agora você está pronto para iniciar o servidor local:
 
 python manage.py runserver
 
 O terminal mostrará um link, abra este link no seu navegador com ctrl + click normalmente ele é assim: http://###.#.#.#:####/ so que as tags são numeros.
 
-Para finalizar inicie a conecção com o redis e pronto!
-
-python manage.py rqworker default
 
 --------------------------------------------------------------------------------------------------------------------------------
 
@@ -91,25 +80,3 @@ ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO (10-15MIN) POREM NA
 Disclaimer: Não me responsabilizo por perdas, use por sua conta e risco.
 
 --------------------------------------------------------------------------------------------------------------------------------
-
-Como instalar o Docker? 
-
-Passo A: Instalar o Docker Desktop
-
-Acesse o site oficial do Docker: Docker Desktop.
-
-Baixe e execute o instalador para Windows. (https://docs.docker.com/desktop/setup/install/windows-install/)
-
-O instalador pode pedir para habilitar o WSL 2 deixe-o fazer isso.
-
-Após a instalação, reinicie o seu computador.
-
-Passo B: Iniciar o Redis
-
-Após reiniciar, abra o PowerShell.
-
-Execute o seguinte comando:
-
-docker run -d --name evolutium-redis -p 6379:6379 redis
-
-Pronto! pode voltar ao passo 4.

@@ -1,7 +1,6 @@
-# core_logic/synthesis_engine.py
 import google.generativeai as genai
 import json
-from . import config  # <-- ESTA É A ÚNICA LINHA QUE MUDA DA SUA VERSÃO
+from . import config
 import logging
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
@@ -9,7 +8,6 @@ class SynthesisEngine:
     def  __init__(self, api_key=None):
         self.model = None
         try:
-            # Prioriza a chave passada diretamente. Se não houver, busca no config.
             final_api_key = api_key if api_key else config.GEMINI_API_KEY
 
             if not final_api_key:
@@ -24,8 +22,8 @@ class SynthesisEngine:
                 HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
             }
 
-            self.model = genai.GenerativeModel('gemini-1.5-flash', safety_settings=safety_settings)
-            logging.info("[ENGINE] Motor de Síntese com 'gemini-1.5-flash' inicializado com SUCESSO.")
+            self.model = genai.GenerativeModel('gemini-flash-latest', safety_settings=safety_settings)
+            logging.info("[ENGINE] Motor de Síntese com 'gemini-2.5-flash' inicializado com SUCESSO.")
         except Exception as e:
             logging.critical(f"[ENGINE] ERRO FATAL NA INICIALIZAÇÃO DO GEMINI: {e}", exc_info=True)
             raise

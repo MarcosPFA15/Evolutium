@@ -1,41 +1,8 @@
-// static/trading_app/js/dashboard.js
 document.addEventListener('DOMContentLoaded', function() {
     const analyzeBtn = document.getElementById('start-analysis-btn');
     const loaderContainer = document.getElementById('loader-container');
     const analysisResultContainer = document.getElementById('analysis-result');
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-    let pollingInterval;
-
-    function pollJobStatus(jobId) {
-        pollingInterval = setInterval(() => {
-            fetch(`/check_analysis_result/${jobId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'finished') {
-                        clearInterval(pollingInterval);
-                        loaderContainer.style.display = 'none';
-                        analyzeBtn.disabled = false;
-                        analyzeBtn.innerText = 'Analisar e Otimizar Novamente';
-                        displayResults(data.result);
-                    } else if (data.status === 'failed') {
-                        clearInterval(pollingInterval);
-                        loaderContainer.style.display = 'none';
-                        analyzeBtn.disabled = false;
-                        analyzeBtn.innerText = 'Tentar Análise Novamente';
-                        displayError('A análise falhou. Por favor, tente novamente.');
-                    }
-                    // If 'queued' or 'started', do nothing and wait for the next poll
-                })
-                .catch(error => {
-                    console.error('Error polling job status:', error);
-                    clearInterval(pollingInterval);
-                    loaderContainer.style.display = 'none';
-                    analyzeBtn.disabled = false;
-                    displayError('Ocorreu um erro ao verificar o resultado da análise.');
-                });
-        }, 5000); // Poll every 5 seconds
-    }
 
     function displayError(message) {
         analysisResultContainer.innerHTML = `<div class="alert alert-danger">${message}</div>`;
@@ -44,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayResults(recommendation) {
         if (!recommendation) {
             displayError("Não foi possível obter uma recomendação da IA.");
+            return;
+        }
+
+        if (recommendation.error) {
+            displayError(`A análise falhou: ${recommendation.message}`);
             return;
         }
 
@@ -79,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ${suggestionHtml}
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-                        <button type="submit" class="btn btn-success">Aprovar</button>
+                        <button type="submit" class="btn btn-primary">Aprovar</button>
                         <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('analysis-result').innerHTML = ''">Ignorar</button>
                     </div>
                 </form>
@@ -105,10 +77,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (analyzeBtn) {
         analyzeBtn.addEventListener('click', function() {
-            // Start analysis
             loaderContainer.style.display = 'block';
             analysisResultContainer.innerHTML = '';
             analyzeBtn.disabled = true;
+            analyzeBtn.innerText = 'Analisando...';
 
             fetch(analyzeBtn.dataset.analysisUrl, {
                 method: 'POST',
@@ -119,21 +91,21 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('A resposta do servidor não foi OK. Verifique o terminal do Django.');
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.job_id) {
-                    pollJobStatus(data.job_id);
-                } else {
-                    throw new Error(data.error || 'Failed to start analysis job.');
-                }
-            })
-            .catch(error => {
-                console.error('Error starting analysis:', error);
                 loaderContainer.style.display = 'none';
                 analyzeBtn.disabled = false;
+                analyzeBtn.innerText = 'Analisar e Otimizar Novamente';
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Erro ao executar a análise:', error);
+                loaderContainer.style.display = 'none';
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerText = 'Tentar Análise Novamente';
                 displayError(error.message);
             });
         });

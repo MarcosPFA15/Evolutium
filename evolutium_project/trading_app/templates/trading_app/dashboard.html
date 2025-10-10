@@ -8,7 +8,6 @@
 {% csrf_token %}
 
 <div class="row">
-    <!-- Coluna da Esquerda: Portfólio e Posições -->
     <div class="col-lg-7">
         <div class="card mb-4">
             <div class="card-header">
@@ -26,6 +25,8 @@
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="submit" name="amount" value="1000" class="btn btn-outline-success">+1000</button>
                         <button type="submit" name="amount" value="100" class="btn btn-outline-success">+100</button>
+                        <button type="submit" name="amount" value="10" class="btn btn-outline-success">+10</button>
+                        <button type="submit" name="amount" value="-10" class="btn btn-outline-danger">-10</button>
                         <button type="submit" name="amount" value="-100" class="btn btn-outline-danger">-100</button>
                         <button type="submit" name="amount" value="-1000" class="btn btn-outline-danger">-1000</button>
                     </div>
@@ -48,8 +49,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Coluna da Direita: Análise IA -->
     <div class="col-lg-5">
         <div class="card mb-4">
             <div class="card-header">
@@ -67,20 +66,15 @@
                 </div>
             </div>
         </div>
-
-        <!-- Container para o loader e resultados -->
         <div id="loader-container" class="loader-container">
             <div class="loader"></div>
             <p class="text-muted">Analisando o mercado... Isso pode levar alguns minutos.</p>
         </div>
 
         <div id="analysis-result">
-            <!-- Os resultados da análise da IA serão injetados aqui via JavaScript -->
         </div>
     </div>
 </div>
 
-<!-- Caminho do JavaScript corrigido -->
 <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
-

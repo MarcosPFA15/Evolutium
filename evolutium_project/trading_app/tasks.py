@@ -1,4 +1,4 @@
-# trading_app/tasks.py
+
 import math
 from decimal import Decimal
 from .models import Portfolio, UserProfile
@@ -23,20 +23,14 @@ def perform_full_analysis(user_id):
 
         synthesis_engine = SynthesisEngine(api_key=api_key)
         data_provider = DataProvider()
-        
-        # Contexto de mercado
         ibov_hist = yf.Ticker("^BVSP").history(period="7d")
         if ibov_hist.empty:
             market_context = {"ibov_change": "N/A"}
         else:
             change = (ibov_hist['Close'].iloc[-1] / ibov_hist['Close'].iloc[0]) - 1
             market_context = {"ibov_change": f"{change:.2%}"}
-        
-        # Histórico de transações
         trade_history_qs = portfolio.trade_history.order_by('-timestamp')[:5]
         trade_history = list(trade_history_qs.values('timestamp', 'ticker', 'side', 'quantity', 'price'))
-
-        # 1. Avaliar Venda de Posições Atuais
         for pos in portfolio.positions.all():
             market_data = data_provider.get_market_data(pos.ticker)
             if market_data:
@@ -48,9 +42,8 @@ def perform_full_analysis(user_id):
                         'action': 'SELL', 'ticker': pos.ticker, 'rationale': sell_decision.get('rationale'),
                         'quantity': pos.quantity, 'current_price': market_data['fundamental_data'].get('Preço Atual', 0)
                     }
-
-        # 2. Se não houver venda, procurar por Compra
         tickers_in_portfolio = {p.ticker for p in portfolio.positions.all()}
+        print("--- INICIANDO A BUSCA POR CANDIDATOS DE COMPRA ---")
         candidates = [data for ticker in TICKERS_TO_MONITOR if ticker not in tickers_in_portfolio and (data := data_provider.get_market_data(ticker))]
         if candidates:
             buy_decision = synthesis_engine.decide_best_investment(candidates, trade_history, market_context)
@@ -67,12 +60,9 @@ def perform_full_analysis(user_id):
                             'action': 'BUY', 'ticker': ticker, 'rationale': buy_decision.get('rationale'),
                             'suggested_quantity': quantity, 'current_price': price
                         }
-        
-        # 3. Se nenhuma ação for encontrada, manter
         logging.info(f"Nenhuma oportunidade clara encontrada. Recomendação: HOLD para o usuário {user_id}.")
         return {'action': 'HOLD', 'ticker': 'ALL', 'rationale': 'Nenhuma oportunidade clara de compra ou venda foi identificada no momento.'}
 
     except Exception as e:
         logging.error(f"Falha na análise em segundo plano para o usuário {user_id}: {e}", exc_info=True)
-        # Retorna um dicionário de erro para ser tratado no frontend
         return {"error": True, "message": str(e)}

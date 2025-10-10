@@ -1,4 +1,3 @@
-# api_client.py
 import requests
 import json
 import time
@@ -29,8 +28,6 @@ class BTGAPIClient:
         except (IOError, json.JSONDecodeError, KeyError, ValueError) as e:
             logging.error(f"[API SIMULADA] Falha ao ler o arquivo de saldo simulado: {e}", exc_info=True)
             return None
-
-    # --- FUNÇÃO NOVA ---
     def update_account_balance(self, new_balance: float):
         """
         Simula a atualização do saldo na corretora após uma operação.

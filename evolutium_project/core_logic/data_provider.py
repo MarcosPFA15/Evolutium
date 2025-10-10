@@ -1,4 +1,3 @@
-# core_logic/data_provider.py
 import yfinance as yf
 import pandas as pd
 import logging
@@ -42,7 +41,6 @@ class DataProvider:
                 "Setor": info.get('sector'), "Resumo": info.get('longBusinessSummary')
             }
             
-            # --- CHAMADA DE NOTÍCIAS RESTAURADA ---
             news = yf_ticker.news
             recent_news = [item['title'] for item in news[:5] if 'title' in item] if news else ["Nenhuma notícia recente encontrada."]
 

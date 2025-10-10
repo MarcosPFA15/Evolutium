@@ -1,4 +1,3 @@
-# core_logic/apps.py
 from django.apps import AppConfig
 
 class CoreLogicConfig(AppConfig):
