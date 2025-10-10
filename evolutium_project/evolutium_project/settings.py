@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'trading_app.apps.TradingAppConfig',
     'core_logic.apps.CoreLogicConfig',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -70,14 +71,23 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+# Ajustado para apontar para a nova pasta 'static' no nível do projeto
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+# Onde os arquivos serão coletados para produção
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_collected')
 
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuração do Redis e Django-RQ
 RQ_QUEUES = {
     'default': {
-        'URL': REDIS_URL,
-        'DEFAULT_TIMEOUT': 900, # Timeout de 18 minutos por tarefa
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 1800, # Timeout de 30 minutos por tarefa
     }
 }
+
