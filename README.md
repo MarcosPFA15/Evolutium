@@ -12,6 +12,8 @@ Python: Certifique-se de ter o Python instalado.
 
 Git: Você precisará do Git para clonar o repositório da pra baixalo em git-scm.com.
 
+Redis: Você PRECISA do redis para que a fila de tarefas em segundo plano funcione, vou deixar um tutorial no final do read me, ensinando a instalar o redis utilizando o docker.
+
 Visual Studio: e aqui que a magica acontece certifique-se de telo.
 
 --------------------------------------------------------------------------------------------------------------------------------
@@ -57,24 +59,57 @@ python manage.py migrate
 --------------------------------------------------------------------------------------------------------------------------------
 
 Passo 4: Executar o Aplicativo!
+
+Inicia o servidor do redis (tutorial na instalação do redis)
+
+Apos isso execute:
+
+python manage.py migrate
+
 Agora você está pronto para iniciar o servidor local:
 
 python manage.py runserver
 
 O terminal mostrará um link, abra este link no seu navegador com ctrl + click normalmente ele é assim: http://###.#.#.#:####/ so que as tags são numeros.
 
-Apos isso abra um novo terminal e execute: 
+Para finalizar inicie a conecção com o redis e pronto!
 
 python manage.py rqworker default
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Qualquer bug so me reportar :D
+Qualquer bug ou duvida so me chamar :D
 
 Recomendo voces usarem uma vez por dia e obrigado por baixar
+
+(não precisem se preocupar com salvamento, nem precisa manter o servidor no ar, ele grava as informações que voce coloca para da proxima vez que voce iniciar ele)
 
 !!
 ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO (10-15MIN) POREM NAO RECARREGUE A PAGINA
 !!
 
 Disclaimer: Não me responsabilizo por perdas, use por sua conta e risco.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Como instalar o Docker? 
+
+Passo A: Instalar o Docker Desktop
+
+Acesse o site oficial do Docker: Docker Desktop.
+
+Baixe e execute o instalador para Windows. (https://docs.docker.com/desktop/setup/install/windows-install/)
+
+O instalador pode pedir para habilitar o WSL 2 deixe-o fazer isso.
+
+Após a instalação, reinicie o seu computador.
+
+Passo B: Iniciar o Redis
+
+Após reiniciar, abra o PowerShell.
+
+Execute o seguinte comando:
+
+docker run -d --name evolutium-redis -p 6379:6379 redis
+
+Pronto! pode voltar ao passo 4.
