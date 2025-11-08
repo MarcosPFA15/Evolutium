@@ -14,7 +14,7 @@
 
 ​Manter uma conta de usuário virtual com saldo e ativos para fácil gerenciamento.
 
-​🚀 O Futuro do Evolutium:
+## ​🚀 O Futuro do Evolutium: ##
 
 ​O nome "Evolutium" foi escolhido com um propósito, a versão atual é um bot de análise mas a versão final é muito mais ambiciosa.
 
@@ -28,7 +28,8 @@
 
 ​Este é a minha roadmap final do projeto para criar uma IA que verdadeiramente "evolui".
 
-​🛠️ Guia de Instalação Local
+## ​🛠️ Guia de Instalação Local ##
+
 ​Este guia irá ajudá-lo a configurar e executar o aplicativo Evolutium AI no seu próprio computador.
 
 ​Pré-requisitos:
@@ -92,7 +93,7 @@ O terminal mostrará um link, abra este link no seu navegador com ctrl + click n
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-​⚠️ Atenção e Boas Práticas
+## ​⚠️ Atenção e Boas Práticas ##
 ​!! IMPORTANTE !!
 Quando o bot iniciar a análise pela primeira vez, o processo vai demorar (cerca de 10 a 15 minutos), pois ele está processando centenas de ativos. NÃO RECARREGUE A PÁGINA durante esse tempo.
 
