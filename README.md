@@ -1,18 +1,42 @@
-# BEM VINDOO!!!!!!!!!!!
+​Evolutium - O Agente de Análise de Ativos com IA
 
-O Evolutium é uma ia que verifica mais de 600 ativos da bolsa e escolhe a melhor opção, alem de criar uma conta com seu saldo e ativos ja comprados para voce
-não se perder, ela tambem verifica qual dos ativos seria bom para vender e cria relatorios, se quiserem dou uma explicação melhor de como ela funciona, para finalizar
-caso queriam um ativo que nao esta na lista do config.py é so me falar que eu adiciono para todos.
+​(Licença Proprietária - All Rights Reserved)
 
-Este guia irá ajudá-lo a configurar e executar o aplicativo Evolutium AI no seu próprio computador.
+​🎯 O que é o Evolutium?
+​O Evolutium é uma plataforma de IA projetada para analisar o mercado de ações, atualmente, ele monitora mais de 600 ativos da bolsa e utiliza inteligência artificial para:
 
-Pré-requisitos:
+​Selecionar as melhores oportunidades de compra.
 
-Python: Certifique-se de ter o Python instalado.
+​Sugerir quais ativos em carteira devem ser vendidos.
 
-Git: Você precisará do Git para clonar o repositório da pra baixalo em git-scm.com.
+​Criar relatórios de performance.
 
-Visual Studio: e aqui que a magica acontece certifique-se de telo.
+​Manter uma conta de usuário virtual com saldo e ativos para fácil gerenciamento.
+
+​🚀 O Futuro do Evolutium:
+
+​O nome "Evolutium" foi escolhido com um propósito, a versão atual é um bot de análise mas a versão final é muito mais ambiciosa.
+
+​O verdadeiro Evolutium será um agente de IA meta-adaptativo, a ideia é que ele não apenas analise ativos, mas que seja capaz de:
+
+​Aprender com os Erros: Analisar os relatórios de performance e os resultados das decisões tomadas por todos os usuários que utilizam o evolutium.
+
+​Ser Auto-Corretivo: Identificar falhas em sua própria lógica ou estratégia de análise (ex: "Minha sugestão de venda para o ativo X foi prematura").
+
+​Evoluir Autonomamente: Alterar seu próprio código-fonte para implementar melhorias, corrigir estratégias e lançar novas atualizações de forma autônoma.
+
+​Este é a minha roadmap final do projeto para criar uma IA que verdadeiramente "evolui".
+
+​🛠️ Guia de Instalação Local
+​Este guia irá ajudá-lo a configurar e executar o aplicativo Evolutium AI no seu próprio computador.
+
+​Pré-requisitos:
+
+​Python: Certifique-se de ter o Python 3.x instalado.
+
+​Git: Você precisará do Git para clonar o repositório. (Disponível em git-scm.com).
+
+​Editor de Código: Recomendo fortemente o Visual Studio Code.
 
 --------------------------------------------------------------------------------------------------------------------------------
 
@@ -67,16 +91,17 @@ O terminal mostrará um link, abra este link no seu navegador com ctrl + click n
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Qualquer bug ou duvida so me chamar :D
+​⚠️ Atenção e Boas Práticas
+​!! IMPORTANTE !!
+Quando o bot iniciar a análise pela primeira vez, o processo vai demorar (cerca de 10 a 15 minutos), pois ele está processando centenas de ativos. NÃO RECARREGUE A PÁGINA durante esse tempo.
 
-Recomendo voces usarem uma vez por dia e obrigado por baixar
+​Uso Recomendado: Recomendo executar a análise uma vez por dia.
 
-(não precisem se preocupar com salvamento, nem precisa manter o servidor no ar, ele grava as informações que voce coloca para da proxima vez que voce iniciar ele)
+​Salvamento: Não se preocupe em salvar. O servidor grava todas as suas informações automaticamente no banco de dados.
 
-!!
-ATENÇÃO QUANDO O BOT COMEÇAR A ANALISAR VAI DEMORAR MESMO (10-15MIN) POREM NAO RECARREGUE A PAGINA
-!!
+​Disclaimer: Este é um projeto de portfólio para demonstração técnica. Não me responsabilizo por perdas financeiras. Use por sua conta e risco.
 
-Disclaimer: Não me responsabilizo por perdas, use por sua conta e risco.
+​🐛 Bugs ou Dúvidas?
+​Encontrou um problema ou tem uma sugestão? Abra uma "Issue" aqui no repositório do GitHub.
 
 --------------------------------------------------------------------------------------------------------------------------------
