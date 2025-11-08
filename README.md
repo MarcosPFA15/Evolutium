@@ -103,7 +103,7 @@ Quando o bot iniciar a análise pela primeira vez, o processo vai demorar (cerca
 
 ​Disclaimer: Este é um projeto de portfólio para demonstração técnica. Não me responsabilizo por perdas financeiras. Use por sua conta e risco.
 
-​🐛 Bugs ou Dúvidas?
+## ​🐛 Bugs ou Dúvidas? ##
 ​Encontrou um problema ou tem uma sugestão? Abra uma "Issue" aqui no repositório do GitHub.
 
 --------------------------------------------------------------------------------------------------------------------------------
