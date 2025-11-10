@@ -14,13 +14,13 @@
 
 ​Manter uma conta de usuário virtual com saldo e ativos para fácil gerenciamento.
 
-Eles faz essas escolhas baseado em dados de cada ativo e monitorando as últimas notícias.
+Todas essas escolhas são baseadas em dados e informações de cada ativo, além disso o bot monitora as últimas notícias de empresa.
 
 ## ​🚀 O Futuro do Evolutium: ##
 
-​O nome "Evolutium" foi escolhido com um propósito, a versão atual é um bot de análise mas a versão final é muito mais ambiciosa.
+​O nome "Evolutium" não foi escolhido atoa, a versão atual é apenas um bot de análise, mas a versão final é muito mais ambiciosa.
 
-​O verdadeiro Evolutium será um agente de IA meta-adaptativo, a ideia é que ele não apenas analise ativos, mas que seja capaz de:
+​O verdadeiro Evolutium será um agente de IA meta-adaptativo, a ideia é que ele não apenas analise ativos, mas que ele seja capaz de:
 
 ​Aprender com os Erros: Analisar os relatórios de performance e os resultados das decisões tomadas por todos os usuários que utilizam o evolutium.
 
@@ -28,7 +28,7 @@ Eles faz essas escolhas baseado em dados de cada ativo e monitorando as últimas
 
 ​Evoluir Autonomamente: Alterar seu próprio código-fonte para implementar melhorias, corrigir estratégias e lançar novas atualizações de forma autônoma.
 
-​Este é a minha roadmap final do projeto para criar uma IA que verdadeiramente "evolui".
+​Esta é a minha roadmap final do projeto para criar uma IA que verdadeiramente "evolui".
 
 ## ​🛠️ Guia de Instalação Local ##
 
