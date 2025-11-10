@@ -14,6 +14,8 @@
 
 ​Manter uma conta de usuário virtual com saldo e ativos para fácil gerenciamento.
 
+Eles faz essas escolhas baseado em dados de cada ativo e monitorando as últimas notícias.
+
 ## ​🚀 O Futuro do Evolutium: ##
 
 ​O nome "Evolutium" foi escolhido com um propósito, a versão atual é um bot de análise mas a versão final é muito mais ambiciosa.
