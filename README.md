@@ -97,13 +97,13 @@ O terminal mostrará um link, abra este link no seu navegador com ctrl + click n
 
 ## ​⚠️ Atenção e Boas Práticas ##
 ​!! IMPORTANTE !!
-Quando o bot iniciar a análise pela primeira vez, o processo vai demorar (cerca de 10 a 15 minutos), pois ele está processando centenas de ativos. NÃO RECARREGUE A PÁGINA durante esse tempo.
+Quando o bot iniciar a análise pela primeira vez, o processo vai demorar (cerca de 10 a 15 minutos), pois ele está processando centenas de ativos NÃO RECARREGUE A PÁGINA durante esse tempo.
 
-​Uso Recomendado: Recomendo executar a análise uma vez por dia.
+​Uso Recomendado: executar a análise uma vez por dia.
 
-​Salvamento: Não se preocupe em salvar. O servidor grava todas as suas informações automaticamente no banco de dados.
+​Salvamento: Não se preocupe em salvar pois o seu próprio computador grava todas as suas informações automaticamente no banco de dados.
 
-​Disclaimer: Este é um projeto de portfólio para demonstração técnica. Não me responsabilizo por perdas financeiras. Use por sua conta e risco.
+​Disclaimer: Este é um projeto de portfólio criado por min para demonstração técnica, não me responsabilizo por perdas financeiras, use por sua conta e risco.
 
 ## ​🐛 Bugs ou Dúvidas? ##
 ​Encontrou um problema ou tem uma sugestão? Abra uma "Issue" aqui no repositório do GitHub.
